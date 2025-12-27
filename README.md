@@ -27,515 +27,110 @@
 <details open>
 <summary><b>简体中文</b></summary>
 
-> 一个基于 Vue3.x + TypeScript 的在线演示文稿（幻灯片）应用，还原了大部分 Office PowerPoint 常用功能，支持 文字、图片、形状、线条、图表、表格、视频、音频、公式 几种最常用的元素类型，每一种元素都拥有高度可编辑能力，同时支持丰富的快捷键和右键菜单，力求还原桌面应用级体验。支持导出本地 PPTX 文件，支持移动端基础编辑和预览。您可以在此基础上搭建自己的在线幻灯片应用。
+> 一个基于 Vue3.x + TypeScript 的在线演示文稿（幻灯片）应用，还原了大部分 Office PowerPoint 常用功能，力求还原桌面应用级体验。支持导出本地 PPTX 文件，支持移动端基础编辑和预览。
 
+## 🆕 核心新增：模板服务器 (Template Server)
 
-## 🆕 新增功能：模板服务器
+本项目现已全面升级，新增了**高性能服务器端模板存储**功能，实现了真正的全平台协同。
 
-本项目新增了**服务器端模板存储**功能，支持跨设备共享默认模板：
+### 🚀 亮点功能
+- **协同共享**：一处设置，全端同步。支持跨设备共享默认模板。
+- **安全加固**：模板操作（设置/修改/清除）均受 SHA-256 加密验证保护。
+- **智慧网络**：自动适配 localhost、内网 IP 及公网域名访问。
+- **极简部署**：支持前后端一键启动，内置生产级 Express 静态服务。
 
-### 核心功能
-- **跨设备共享**：在任何设备访问都能看到相同的默认模板
-- **密码保护**：设置、修改、清除模板都需要密码验证（SHA-256加密）
-- **自动适配网络**：支持 localhost、IP 地址等多种访问方式
-- **密码管理**：支持修改密码功能
+### 🛠️ 快速开始
 
-### 快速开始
-
-**开发环境（推荐使用方式二）**：
-
-方式一 - 分别启动：
+**推荐：一键启动（开发环境）**
 ```bash
-# 终端 1: 启动后端服务器
-cd server
-npm install
-npm start
-
-# 终端 2: 启动前端开发服务器
-npm install
-npm run dev
-```
-
-方式二 - 同时启动（推荐）：
-```bash
-# 安装依赖
+# 1. 安装项目所有依赖
 npm install
 cd server && npm install && cd ..
 
-# 同时启动前后端
+# 2. 启动全栈服务 (Frontend + Backend)
 npm run dev:all
 ```
+*访问地址：[http://localhost:5173](http://localhost:5173)*
 
-**生产环境**：
+**生产环境部署**
 ```bash
-# 1. 构建前端
+# 构建并启动
 npm run build
-
-# 2. 启动服务器（包含前端和后端）
 npm start
 ```
-
-3. **设置默认模板**：
-   - 上传 PPTX 或编辑内容
-   - 点击菜单 → "设为默认模板"
-   - 输入密码（首次设置）
-
-4. **跨设备访问**：
-   - 其他设备访问 `http://[服务器IP]:5173`
-   - 自动加载默认模板
-
-### 详细文档
-- 📖 [使用说明](TEMPLATE_SERVER_README.md) - 功能介绍和使用指南
-- 📖 [部署手册](DEPLOYMENT.md) - 开发、生产、Docker 等部署方式
-
-### ⚖️ 开源协议说明
-本模板服务器功能严格遵循 **AGPL-3.0 协议**：
-- ✅ 源代码完全开源
-- ✅ 修改后的代码必须开源
-- ✅ 网络服务也必须提供源代码
-- ✅ 保留原作者版权信息
-
-如需商业使用，请参考下方的[商业用途](#-商业用途)说明。
+*访问地址：[http://localhost:3000](http://localhost:3000)*
 
 ---
 
-## 👀 前排提示
-1. 本项目是一个 "Web 幻灯片应用" ，而不是 "低代码平台"、"H5 编辑器"、"图片编辑器" 、"白板应用"等。
-2. 本项目的目标受众是<b>有【Web 幻灯片】开发需求的开发者</b>，提供的链接只是一个演示地址，不提供任何在线服务。你不应该直接将本项目作为工具使用，也不支持一键部署。
-如果你只是需要一个服务或工具，可以选择更优秀和成熟的产品，例如：[石墨文档](https://shimo.im/)、[金山文档](https://www.kdocs.cn/)、[Slidev](https://sli.dev/)、[revealjs](https://revealjs.com/) 等。
-3. 本项目是基于 DOM 的渲染方案，优点是简单易上手。但是相比 Canvas 渲染的方案，在复杂场景下性能会存在一定的差距，所以如果你对性能有较高的要求，本项目可能不是一个好的选择/参考方向。
-4. 这里总结了一些[常见问题](/doc/Q&A.md)，第一次提 Issues 和 PR 时，务必提前阅读此文档。
+## 📚 核心文档
+- 📖 [前后端整合说明](INTEGRATION_SUCCESS.md) - 架构与通信机制深度解析
+- 📖 [功能使用指南](TEMPLATE_SERVER_README.md) - 重点介绍模板服务器操作
+- 📖 [部署手册](DEPLOYMENT.md) - 包含 Docker 及多种环境配置
 
+---
 
-## 🚀 项目运行
+## 👀 功能亮点
+### 1. 幻灯片编辑
+- **全要素支持**：文字（富文本）、图片、形状、线条、图表、表格、视频、音频、公式。
+- **极致体验**：支持历史记录、快捷键、右键菜单、吸附对齐、层级调整、元素组合。
+- **媒体处理**：图片滤镜、裁剪（按形状）、视频封底设置。
+- **高级动效**：丰富的入场/强调/退场动画，多种页面翻页转场。
 
-本项目包含前端和后端服务。
+### 2. 生态与集成
+- **导出能力**：支持导出 PPTX、JSON、图片、PDF 及特有的 `.pptist` 格式。
+- **演示模式**：演讲者视图、画笔工具、黑板、计时器、激光笔、自动放映。
+- **移动端适配**：支持移动端基础编辑、备注查看及播放预览。
 
-### 开发环境
-推荐使用以下命令一键启动前后端服务：
+---
 
-```bash
-# 安装依赖
-npm install
-cd server && npm install && cd ..
-
-# 启动服务
-npm run dev:all
-```
-
-访问地址：http://localhost:5173
-
-### 生产环境
-```bash
-# 构建前端
-npm run build
-
-# 启动服务
-npm start
-```
-访问地址：http://localhost:3000
-
-
-## 📚 功能列表
-### 基础功能
-- 历史记录（撤销、重做）
-- 快捷键
-- 右键菜单
-- 导出本地文件（PPTX、JSON、图片、PDF）
-- 导入导出特有 .pptist 文件
-- 打印
-### 幻灯片页面编辑
-- 页面添加、删除
-- 页面顺序调整
-- 页面复制粘贴
-- 背景设置（纯色、渐变、图片）
-- 设置画布尺寸
-- 网格线
-- 标尺
-- 画布缩放、移动
-- 主题设置
-- 演讲者备注（富文本）
-- 幻灯片模板
-- 翻页动画
-- 元素动画（入场、退场、强调）
-- 选择面板（隐藏元素、层级排序、元素命名）
-- 查找/替换
-- 批注
-### 幻灯片元素编辑
-- 元素添加、删除
-- 元素复制粘贴
-- 元素拖拽移动
-- 元素旋转
-- 元素缩放
-- 元素多选（框选、点选）
-- 多元素组合
-- 多元素批量编辑
-- 元素锁定
-- 元素吸附对齐（移动和缩放）
-- 元素层级调整
-- 元素对齐到画布
-- 元素对齐到其他元素
-- 多元素均匀分布
-- 拖拽添加图文
-- 粘贴外部图片
-- 元素坐标、尺寸和旋转角度设置
-- 元素超链接（链接到网页、链接到其他幻灯片页面）
-#### 文字
-- 富文本编辑（颜色、高亮、字体、字号、加粗、斜体、下划线、删除线、角标、行内代码、引用、超链接、对齐方式、序号、项目符号、段落缩进、清除格式）
-- 行高
-- 字间距
-- 段间距
-- 首行缩进
-- 填充色
-- 边框
-- 阴影
-- 透明度
-- 竖向文本
-#### 图片
-- 裁剪（自定义、按形状、按纵横比）
-- 滤镜
-- 着色（蒙版）
-- 翻转
-- 边框
-- 阴影
-- 替换图片
-- 重置图片
-- 设置为背景图
-#### 形状
-- 绘制任意多边形
-- 绘制任意线条（未封闭形状模拟）
-- 替换形状
-- 填充色
-- 边框
-- 阴影
-- 透明度
-- 翻转
-- 形状格式刷
-- 编辑文字（支持富文本，与文字元素的富文本编辑功能近似）
-#### 线条
-- 颜色
-- 宽度
-- 样式
-- 端点样式
-#### 图表（柱状图、条形图、折线图、面积图、散点图、饼图、环形图）
-- 图表转换
-- 数据编辑
-- 背景填充
-- 主题色
-- 坐标系与坐标文字颜色
-- 其他图表设置
-- 边框
-- 图例
-#### 表格
-- 行、列添加删除
-- 主题设置（主题色、表头、汇总行、第一列、最后一列）
-- 合并单元格
-- 单元格样式（填充色、文字颜色、加粗、斜体、下划线、删除线、对齐方式）
-- 边框
-#### 视频
-- 预览封面设置
-- 自动播放
-#### 音频
-- 图标颜色
-- 自动播放
-- 循环播放
-#### 公式
-- LaTeX编辑
-- 颜色设置
-- 公式线条粗细设置
-### 幻灯片放映
-- 全部幻灯片预览
-- 画笔、黑板工具
-- 计时器工具
-- 激光笔
-- 自动放映
-- 演讲者视图
-### 移动端
-- 基础编辑
-    - 页面添加、删除、复制、备注、撤销重做
-    - 插入文字、图片、矩形、圆形
-    - 元素通用操作：移动、缩放、旋转、复制、删除、层级调整、对齐
-    - 元素样式：文字（加粗、斜体、下划线、删除线、字号、颜色、对齐方向）、填充色
-- 基础预览
-- 播放预览
-
-
-## 🎯 开发
-目前没有完整的开发文档，但下面这些文档可能会对你有一些帮助：
-- [前后端整合文档](/INTEGRATION_SUCCESS.md) - 了解前后端集成的架构和细节
+## 🎯 开发者指南
 - [项目目录与数据结构](/doc/DirectoryAndData.md)
 - [画布与元素的基本原理](/doc/Canvas.md)
 - [如何自定义一个元素](/doc/CustomElement.md)
 
+---
 
-## 📄 版权声明/开源协议
-[AGPL-3.0 License](/LICENSE) | Copyright © 2020-PRESENT [pipipi-pikachu](https://github.com/pipipi-pikachu)
+## ⚖️ 开源与版权
+本项目的模板服务器增强功能遵循 **AGPL-3.0 协议**。
+- [AGPL-3.0 License](/LICENSE) | Copyright © 2020-PRESENT [pipipi-pikachu](https://github.com/pipipi-pikachu)
 
-
-## 🧮 商业用途
-- 如果你希望将本项目商用盈利，我希望你能尊重开源，遵循 AGPL-3.0 协议，回馈开源社区；
-- 如果你因为任何原因，必须要闭源商用，无法执行 AGPL-3.0 协议，可以选择：
-    1. 使用早期的[Apache 2.0 LICENSE 版本](https://github.com/pipipi-pikachu/PPTist/archive/f1a35bb8e045124e37dcafd6acbf40b4531b69aa.zip)；
-    2. 成为项目的重要贡献者（先违反协议后再成为贡献者不在此项范围）；
-        - 你的代码被本项目作为依赖引用；
-        - 你给本项目提交过重要的 PR 并且被合并；
-        - 你长期参与到本项目的维护工作中；
-
-
-## 👎👎👎 耻辱柱 🤮🤮🤮
-> 👎桌案（西安）信息科技有限公司、西安即刻易用网络科技有限公司 <br> 
-👎产品：Drawon桌案 https://drawon.cn/ <br> 
-👎劣迹：发现违反协议后多次通过邮件和社交平台私信尝试联系沟通，但均已读不回，并在产品官网宣称为自主开发。
+### 🧮 商业用途
+- 若需闭源商用，请参考[商业用途详细说明](#-商业用途)或使用早期的 Apache 2.0 版本。
 
 </details>
-
----
 
 <details>
 <summary><b>English</b></summary>
 
-> A web-based presentation (slideshow) application built with Vue3.x and TypeScript, that replicates most of the common features of Microsoft Office PowerPoint, allowing for the editing and presentation of PPTs online. It offers a rich set of shortcuts and right-click context menus, aiming to recreate a desktop-like application experience. Additionally, it supports exporting to local PPTX files. If you're looking to develop a "Web Slideshow Application," PPTist is a great place to start.
+> A web-based presentation application built with Vue3.x and TypeScript, replicating most features of MS PowerPoint with a desktop-like experience.
 
-<b>Try it online👉：[https://pipipi-pikachu.github.io/PPTist/](https://pipipi-pikachu.github.io/PPTist/)</b>
+## 🆕 New: Template Server
 
-## 🆕 New Feature: Template Server
+The project now includes **server-side template storage** for cross-device synchronization.
 
-This project has added **server-side template storage** functionality, supporting cross-device sharing of default templates:
+### 🚀 Key Features
+- **Cloud Sync**: Share default templates across all your devices.
+- **Security**: Password protection with SHA-256 encryption for template management.
+- **Smart Networking**: Automatic adaptation to localhost and IP-based access.
+- **Unified Stack**: Integrated frontend and backend with single-command startup.
 
-### Core Features
-- **Cross-device sharing**: Access the same default template on any device
-- **Password protection**: Setting, modifying, and clearing templates require password verification (SHA-256 encryption)
-- **Automatic network adaptation**: Supports localhost, IP addresses, and other access methods
-- **Password management**: Supports password modification
+### 🛠️ Quick Start
 
-### Quick Start
-
-**Development Environment (Method 2 recommended)**:
-
-Method 1 - Start separately:
+**Standard Launch (Recommended)**
 ```bash
-# Terminal 1: Start backend server
-cd server
-npm install
-npm start
-
-# Terminal 2: Start frontend dev server
-npm install
-npm run dev
-```
-
-Method 2 - Start together (Recommended):
-```bash
-# Install dependencies
 npm install
 cd server && npm install && cd ..
-
-# Start both frontend and backend
 npm run dev:all
 ```
+*Access: [http://localhost:5173](http://localhost:5173)*
 
-**Production Environment**:
-```bash
-# 1. Build frontend
-npm run build
-
-# 2. Start server (includes frontend and backend)
-npm start
-```
-
-3. **Set default template**:
-   - Upload PPTX or edit content
-   - Click menu → "Set as Default Template"
-   - Enter password (first setup)
-
-4. **Cross-device access**:
-   - Access `http://[server-IP]:5173` from other devices
-   - Default template loads automatically
-
-### Documentation
-- 📖 [User Guide](TEMPLATE_SERVER_README.md) - Feature introduction and usage guide
-- 📖 [Deployment Manual](DEPLOYMENT.md) - Development, production, Docker deployment
-
-### ⚖️ Open Source License
-This template server feature strictly follows the **AGPL-3.0 License**:
-- ✅ Source code is fully open source
-- ✅ Modified code must be open sourced
-- ✅ Network services must also provide source code
-- ✅ Preserve original author copyright
-
-For commercial use, please refer to the [Commercial](#-commercial) section below.
+### 📚 Documentation
+- 📖 [User Guide](TEMPLATE_SERVER_README.md)
+- 📖 [Deployment Manual](DEPLOYMENT.md)
 
 ---
 
-## 🚀 Installation
-
-This project includes both frontend and backend services.
-
-### Development
-Recommended to start both services with one command:
-
-```bash
-# Install dependencies
-npm install
-cd server && npm install && cd ..
-
-# Start services
-npm run dev:all
-```
-
-Access: http://localhost:5173
-
-### Production
-```bash
-# Build frontend
-npm run build
-
-# Start server
-npm start
-```
-Access: http://localhost:3000
-
-
-## 📚 Features
-### Basic Features
-- History (undo, redo)
-- Shortcuts
-- Right-click menu
-- Export local files (PPTX, JSON, images, PDF)
-- Import and export pptist files
-- Print
-### Slide Page Editing
-- Add/delete pages
-- Copy/paste pages
-- Adjust page order
-- Background settings (solid color, gradient, image)
-- Set canvas size
-- Gridlines
-- Rulers
-- Canvas zoom and move
-- Theme settings
-- Speaker notes (rich text)
-- Slide templates
-- Transition animations
-- Element animations (entrance, exit, emphasis)
-- Selection panel (hide elements, layer sorting, element naming)
-- Find/replace
-- Annotations
-### Slide Element Editing
-- Add/delete elements
-- Copy/paste elements
-- Drag and move elements
-- Rotate elements
-- Scale elements
-- Multiple element selection (marquee, point selection)
-- Group multiple elements
-- Batch edit multiple elements
-- Lock elements
-- Magnetic alignment of elements (move and scale)
-- Adjust element layer
-- Align elements to canvas
-- Align elements to other elements
-- Evenly distribute multiple elements
-- Drag to add text and images
-- Paste external images
-- Set element coordinates, size, and rotation
-- Element hyperlinks (link to webpage, link to other slide pages)
-#### Text
-- Rich text editing (color, highlight, font, font size, bold, italic, underline, strikethrough, subscript, inline code, quote, hyperlink, alignment, numbering, bullet points, paragraph indent, clear formatting)
-- Line height
-- Character spacing
-- Paragraph spacing
-- First line indent
-- Fill color
-- Border
-- Shadow
-- Transparency
-- Vertical text
-#### Images
-- Crop (custom, shape, aspect ratio)
-- Filters
-- Tint (mask)
-- Flip
-- Border
-- Shadow
-- Replace image
-- Reset image
-- Set as background
-#### Shapes
-- Draw any polygon
-- Draw any line (unclosed shape simulation)
-- Replace shape
-- Fill color
-- Border
-- Shadow
-- Transparency
-- Flip
-- Shape format painter
-- Edit text (supports rich text, similar to text element's rich text editing)
-#### Lines
-- Color
-- Width
-- Style
-- Endpoint style
-#### Charts (bar, column, line, area, scatter, pie, donut)
-- Chart conversion
-- Data editing
-- Background fill
-- Theme color
-- Coordinate system and axis text color
-- Other chart settings
-- Border
-- Legend
-#### Tables
-- Add/delete rows and columns
-- Theme settings (theme color, header, total row, first column, last column)
-- Merge cells
-- Cell styles (fill color, text color, bold, italic, underline, strikethrough, alignment)
-- Border
-#### Video
-- Preview cover settings
-- Auto play
-#### Audio
-- Icon color
-- Auto play
-- Loop play
-#### Formulas
-- LaTeX editing
-- Color settings
-- Formula line thickness settings
-### Slide Show
-- Preview all slides
-- Pen and blackboard tools
-- Timer tool
-- Laser pointer
-- Auto play
-- Speaker view
-### Mobile
-- Basic editing
-  - Add/delete/copy/note/undo redo pages
-  - Insert text, images, rectangles, circles
-  - General element operations: move, scale, rotate, copy, delete, layer adjust, align
-  - Element styles: text (bold, italic, underline, strikethrough, font size, color, alignment), fill color
-- Basic preview
-- Play preview
-
-
-## 👀 FAQ
-Some common problems: [FAQ](/doc/Q&A.md)
-
-
-## 🎯 Supplement
-There is currently no complete development documentation, but the following documents may be of some help to you:
-- [Frontend-Backend Integration](/INTEGRATION_SUCCESS.md) - Understand the architecture and details of the integration
-- [Project Directory and Data Structure](https://github.com/pipipi-pikachu/PPTist/blob/master/doc/DirectoryAndData.md)
-- [Fundamentals of Canvas and Elements](https://github.com/pipipi-pikachu/PPTist/blob/master/doc/Canvas.md)
-- [How to Customize an Element](https://github.com/pipipi-pikachu/PPTist/blob/master/doc/CustomElement.md)
-
-
 ## 📄 License
 [AGPL-3.0 License](https://github.com/pipipi-pikachu/PPTist/blob/master/LICENSE) | Copyright © 2020-PRESENT [pipipi-pikachu](https://github.com/pipipi-pikachu)
-
-## 🧮 Commercial
-If you wish to use this project for commercial gain, I hope you will respect open source and strictly adhere to the AGPL-3.0 license, giving back to the open source community.
 
 </details>
