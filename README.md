@@ -3,20 +3,20 @@
 </p>
 
 <p align="center">
-    <a href="https://www.github.com/pipipi-pikachu/PPTist/stargazers" target="_black">
-        <img src="https://img.shields.io/github/stars/pipipi-pikachu/PPTist?logo=github" alt="stars" />
+    <a href="https://www.github.com/srsman/PPTist/stargazers" target="_black">
+        <img src="https://img.shields.io/github/stars/srsman/PPTist?logo=github" alt="stars" />
     </a>
-    <a href="https://www.github.com/pipipi-pikachu/PPTist/network/members" target="_black">
-        <img src="https://img.shields.io/github/forks/pipipi-pikachu/PPTist?logo=github" alt="forks" />
+    <a href="https://www.github.com/srsman/PPTist/network/members" target="_black">
+        <img src="https://img.shields.io/github/forks/srsman/PPTist?logo=github" alt="forks" />
     </a>
-    <a href="https://www.github.com/pipipi-pikachu/PPTist/blob/master/LICENSE" target="_black">
-        <img src="https://img.shields.io/github/license/pipipi-pikachu/PPTist?color=%232DCE89&logo=github" alt="license" />
+    <a href="https://www.github.com/srsman/PPTist/blob/master/LICENSE" target="_black">
+        <img src="https://img.shields.io/github/license/srsman/PPTist?color=%232DCE89&logo=github" alt="license" />
     </a>
     <a href="https://www.typescriptlang.org" target="_black">
         <img src="https://img.shields.io/badge/language-TypeScript-blue.svg" alt="language">
     </a>
-    <a href="https://github.com/pipipi-pikachu/PPTist/issues" target="_black">
-        <img src="https://img.shields.io/github/issues-closed/pipipi-pikachu/PPTist.svg" alt="issue">
+    <a href="https://github.com/srsman/PPTist/issues" target="_black">
+        <img src="https://img.shields.io/github/issues-closed/srsman/PPTist.svg" alt="issue">
     </a>
 </p>
 
