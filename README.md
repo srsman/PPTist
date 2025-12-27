@@ -42,18 +42,38 @@
 
 ### 快速开始
 
-1. **启动后端服务器**：
-   ```bash
-   cd server
-   npm install
-   npm start
-   ```
+**开发环境（推荐使用方式二）**：
 
-2. **启动前端服务器**：
-   ```bash
-   npm install
-   npm run dev
-   ```
+方式一 - 分别启动：
+```bash
+# 终端 1: 启动后端服务器
+cd server
+npm install
+npm start
+
+# 终端 2: 启动前端开发服务器
+npm install
+npm run dev
+```
+
+方式二 - 同时启动（推荐）：
+```bash
+# 安装依赖
+npm install
+cd server && npm install && cd ..
+
+# 同时启动前后端
+npm run dev:all
+```
+
+**生产环境**：
+```bash
+# 1. 构建前端
+npm run build
+
+# 2. 启动服务器（包含前端和后端）
+npm start
+```
 
 3. **设置默认模板**：
    - 上传 PPTX 或编辑内容
@@ -88,11 +108,32 @@
 
 
 ## 🚀 项目运行
-```bash
-npm install
 
-npm run dev
+本项目包含前端和后端服务。
+
+### 开发环境
+推荐使用以下命令一键启动前后端服务：
+
+```bash
+# 安装依赖
+npm install
+cd server && npm install && cd ..
+
+# 启动服务
+npm run dev:all
 ```
+
+访问地址：http://localhost:5173
+
+### 生产环境
+```bash
+# 构建前端
+npm run build
+
+# 启动服务
+npm start
+```
+访问地址：http://localhost:3000
 
 
 ## 📚 功能列表
@@ -221,6 +262,7 @@ npm run dev
 
 ## 🎯 开发
 目前没有完整的开发文档，但下面这些文档可能会对你有一些帮助：
+- [前后端整合文档](/INTEGRATION_SUCCESS.md) - 了解前后端集成的架构和细节
 - [项目目录与数据结构](/doc/DirectoryAndData.md)
 - [画布与元素的基本原理](/doc/Canvas.md)
 - [如何自定义一个元素](/doc/CustomElement.md)
@@ -268,18 +310,38 @@ This project has added **server-side template storage** functionality, supportin
 
 ### Quick Start
 
-1. **Start backend server**:
-   ```bash
-   cd server
-   npm install
-   npm start
-   ```
+**Development Environment (Method 2 recommended)**:
 
-2. **Start frontend server**:
-   ```bash
-   npm install
-   npm run dev
-   ```
+Method 1 - Start separately:
+```bash
+# Terminal 1: Start backend server
+cd server
+npm install
+npm start
+
+# Terminal 2: Start frontend dev server
+npm install
+npm run dev
+```
+
+Method 2 - Start together (Recommended):
+```bash
+# Install dependencies
+npm install
+cd server && npm install && cd ..
+
+# Start both frontend and backend
+npm run dev:all
+```
+
+**Production Environment**:
+```bash
+# 1. Build frontend
+npm run build
+
+# 2. Start server (includes frontend and backend)
+npm start
+```
 
 3. **Set default template**:
    - Upload PPTX or edit content
@@ -306,11 +368,32 @@ For commercial use, please refer to the [Commercial](#-commercial) section below
 ---
 
 ## 🚀 Installation
-```bash
-npm install
 
-npm run dev
+This project includes both frontend and backend services.
+
+### Development
+Recommended to start both services with one command:
+
+```bash
+# Install dependencies
+npm install
+cd server && npm install && cd ..
+
+# Start services
+npm run dev:all
 ```
+
+Access: http://localhost:5173
+
+### Production
+```bash
+# Build frontend
+npm run build
+
+# Start server
+npm start
+```
+Access: http://localhost:3000
 
 
 ## 📚 Features
@@ -443,6 +526,7 @@ Some common problems: [FAQ](/doc/Q&A.md)
 
 ## 🎯 Supplement
 There is currently no complete development documentation, but the following documents may be of some help to you:
+- [Frontend-Backend Integration](/INTEGRATION_SUCCESS.md) - Understand the architecture and details of the integration
 - [Project Directory and Data Structure](https://github.com/pipipi-pikachu/PPTist/blob/master/doc/DirectoryAndData.md)
 - [Fundamentals of Canvas and Elements](https://github.com/pipipi-pikachu/PPTist/blob/master/doc/Canvas.md)
 - [How to Customize an Element](https://github.com/pipipi-pikachu/PPTist/blob/master/doc/CustomElement.md)
