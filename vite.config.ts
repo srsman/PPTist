@@ -10,6 +10,14 @@ export default defineConfig({
     host: '0.0.0.0', // 允许外部访问
     port: 5173,
     strictPort: false, // 如果端口被占用，自动尝试下一个可用端口
+    // 代理 API 请求到后端服务器
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
   },
   plugins: [
     vue(),

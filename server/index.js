@@ -3,6 +3,7 @@ const cors = require('cors')
 const fs = require('fs').promises
 const path = require('path')
 const crypto = require('crypto')
+const rateLimit = require('express-rate-limit')
 
 const app = express()
 const PORT = 3000
@@ -10,9 +11,65 @@ const DATA_DIR = path.join(__dirname, 'data')
 const TEMPLATE_FILE = path.join(DATA_DIR, 'default-template.json')
 const PASSWORD_FILE = path.join(DATA_DIR, 'password.json')
 
+// 判断是否为生产环境
+const isProduction = process.env.NODE_ENV === 'production'
+
 // 中间件
-app.use(cors())
+// 1. CORS 配置 - 开发环境才需要
+if (!isProduction) {
+    const allowedOrigins = [
+        'http://localhost:5173',
+        'http://127.0.0.1:5173',
+        'http://localhost:5174',
+        'http://127.0.0.1:5174'
+    ]
+
+    app.use(cors({
+        origin: function (origin, callback) {
+            // 允许没有 origin 的请求（如移动应用、curl、Postman）
+            if (!origin) return callback(null, true)
+
+            // 检查是否在允许列表中
+            if (allowedOrigins.indexOf(origin) !== -1) {
+                callback(null, true)
+            } else {
+                // 允许同一局域网的其他设备访问
+                // 例如：http://192.168.1.100:5173
+                const url = new URL(origin)
+                if (url.port === '5173' || url.port === '5174') {
+                    callback(null, true)
+                } else {
+                    callback(new Error('不允许的来源'))
+                }
+            }
+        },
+        credentials: true
+    }))
+}
+
 app.use(express.json({ limit: '50mb' }))
+
+// 2. 通用请求频率限制
+const generalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 分钟
+    max: 100, // 最多 100 个请求
+    message: { error: '请求过于频繁，请稍后再试' },
+    standardHeaders: true,
+    legacyHeaders: false,
+})
+
+// 3. 认证相关的严格限制
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 分钟
+    max: 10, // 最多 10 次尝试
+    message: { error: '密码尝试次数过多，请 15 分钟后再试' },
+    standardHeaders: true,
+    legacyHeaders: false,
+    skipSuccessfulRequests: true, // 成功的请求不计入限制
+})
+
+// 应用限制器
+app.use('/api/', generalLimiter)
 
 // 确保数据目录存在
 async function ensureDataDir() {
@@ -43,7 +100,7 @@ app.get('/api/template', async (req, res) => {
 })
 
 // 设置默认模板（需要密码）
-app.post('/api/template', async (req, res) => {
+app.post('/api/template', authLimiter, async (req, res) => {
     try {
         const { password, slides, theme } = req.body
 
@@ -91,7 +148,7 @@ app.post('/api/template', async (req, res) => {
 })
 
 // 清除默认模板（需要密码）
-app.delete('/api/template', async (req, res) => {
+app.delete('/api/template', authLimiter, async (req, res) => {
     try {
         const { password } = req.body
 
@@ -129,7 +186,7 @@ app.delete('/api/template', async (req, res) => {
 })
 
 // 修改密码
-app.post('/api/change-password', async (req, res) => {
+app.post('/api/change-password', authLimiter, async (req, res) => {
     try {
         const { oldPassword, newPassword } = req.body
 
@@ -219,7 +276,7 @@ app.get('/api/templates/:id', async (req, res) => {
 })
 
 // 保存新模板（需要密码）
-app.post('/api/templates', async (req, res) => {
+app.post('/api/templates', authLimiter, async (req, res) => {
     try {
         const { password, name, slides, theme } = req.body
 
@@ -279,7 +336,7 @@ app.post('/api/templates', async (req, res) => {
 })
 
 // 更新模板（需要密码）
-app.put('/api/templates/:id', async (req, res) => {
+app.put('/api/templates/:id', authLimiter, async (req, res) => {
     try {
         const { id } = req.params
         const { password, name, slides, theme } = req.body
@@ -342,7 +399,7 @@ app.put('/api/templates/:id', async (req, res) => {
 })
 
 // 删除模板（需要密码）
-app.delete('/api/templates/:id', async (req, res) => {
+app.delete('/api/templates/:id', authLimiter, async (req, res) => {
     try {
         const { id } = req.params
         const { password } = req.body
@@ -383,13 +440,34 @@ app.delete('/api/templates/:id', async (req, res) => {
     }
 })
 
+// 生产环境：托管前端静态文件
+if (isProduction) {
+    const distPath = path.join(__dirname, '../dist')
+
+    // 托管静态文件
+    app.use(express.static(distPath))
+
+    // SPA 路由支持：所有非 API 请求返回 index.html
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(distPath, 'index.html'))
+    })
+}
+
 // 启动服务器
 async function start() {
     await ensureDataDir()
     app.listen(PORT, '0.0.0.0', () => {
         console.log(`模板服务器运行在 http://localhost:${PORT}`)
+        if (isProduction) {
+            console.log(`✅ 生产模式：前端应用已集成`)
+            console.log(`访问地址: http://localhost:${PORT}`)
+        } else {
+            console.log(`开发模式：API 服务`)
+            console.log(`前端开发服务器: http://localhost:5173`)
+        }
         console.log(`局域网访问: http://0.0.0.0:${PORT}`)
     })
 }
 
 start()
+

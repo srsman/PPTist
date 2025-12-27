@@ -1,12 +1,8 @@
 // API 基础地址
-// 如果设置了环境变量，使用环境变量
-// 否则使用当前访问的主机名 + 3000 端口（支持跨设备访问）
-const API_BASE_URL = import.meta.env.VITE_API_URL || (() => {
-    const hostname = window.location.hostname
-    // 使用 127.0.0.1 而不是 localhost 以绕过代理
-    const apiHost = hostname === 'localhost' ? '127.0.0.1' : hostname
-    return `http://${apiHost}:3000`
-})()
+// 开发环境：使用 Vite 代理，相对路径 /api
+// 生产环境：同一服务器，相对路径 /api
+// 如果设置了环境变量，使用环境变量（用于特殊部署场景）
+const API_BASE_URL = import.meta.env.VITE_API_URL || ''
 
 
 // 获取默认模板
