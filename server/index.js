@@ -167,6 +167,222 @@ app.post('/api/change-password', async (req, res) => {
     }
 })
 
+// 获取所有模板列表
+app.get('/api/templates', async (req, res) => {
+    try {
+        const files = await fs.readdir(DATA_DIR)
+        const templates = []
+
+        for (const file of files) {
+            if (file.startsWith('template_') && file.endsWith('.json')) {
+                const filePath = path.join(DATA_DIR, file)
+                const stats = await fs.stat(filePath)
+                const data = await fs.readFile(filePath, 'utf-8')
+                const template = JSON.parse(data)
+
+                templates.push({
+                    id: template.id,
+                    name: template.name,
+                    createdAt: template.createdAt || stats.birthtime,
+                    updatedAt: template.updatedAt || stats.mtime,
+                    slideCount: template.slides ? template.slides.length : 0,
+                })
+            }
+        }
+
+        // 按更新时间倒序排列
+        templates.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+
+        res.json(templates)
+    } catch (error) {
+        console.error('获取模板列表失败:', error)
+        res.status(500).json({ error: '获取模板列表失败' })
+    }
+})
+
+// 获取指定模板
+app.get('/api/templates/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+        const templateFile = path.join(DATA_DIR, `template_${id}.json`)
+
+        const data = await fs.readFile(templateFile, 'utf-8')
+        res.json(JSON.parse(data))
+    } catch (error) {
+        if (error.code === 'ENOENT') {
+            res.status(404).json({ error: '模板不存在' })
+        } else {
+            console.error('获取模板失败:', error)
+            res.status(500).json({ error: '获取模板失败' })
+        }
+    }
+})
+
+// 保存新模板（需要密码）
+app.post('/api/templates', async (req, res) => {
+    try {
+        const { password, name, slides, theme } = req.body
+
+        if (!password) {
+            return res.status(400).json({ error: '请输入密码' })
+        }
+
+        if (!name || !name.trim()) {
+            return res.status(400).json({ error: '请输入模板名称' })
+        }
+
+        // 验证密码
+        let storedPasswordHash = null
+        try {
+            const passwordData = await fs.readFile(PASSWORD_FILE, 'utf-8')
+            storedPasswordHash = JSON.parse(passwordData).hash
+        } catch (error) {
+            return res.status(401).json({ error: '请先设置默认模板以创建密码' })
+        }
+
+        const inputPasswordHash = hashPassword(password)
+        if (storedPasswordHash !== inputPasswordHash) {
+            return res.status(401).json({ error: '密码错误' })
+        }
+
+        // 生成唯一 ID
+        const id = Date.now().toString()
+        const now = new Date().toISOString()
+
+        const template = {
+            id,
+            name: name.trim(),
+            slides,
+            theme,
+            createdAt: now,
+            updatedAt: now,
+        }
+
+        const templateFile = path.join(DATA_DIR, `template_${id}.json`)
+        await fs.writeFile(templateFile, JSON.stringify(template, null, 2), 'utf-8')
+
+        res.json({
+            success: true,
+            message: '模板保存成功',
+            template: {
+                id: template.id,
+                name: template.name,
+                createdAt: template.createdAt,
+                updatedAt: template.updatedAt,
+                slideCount: slides.length,
+            }
+        })
+    } catch (error) {
+        console.error('保存模板失败:', error)
+        res.status(500).json({ error: '保存模板失败' })
+    }
+})
+
+// 更新模板（需要密码）
+app.put('/api/templates/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+        const { password, name, slides, theme } = req.body
+
+        if (!password) {
+            return res.status(400).json({ error: '请输入密码' })
+        }
+
+        // 验证密码
+        let storedPasswordHash = null
+        try {
+            const passwordData = await fs.readFile(PASSWORD_FILE, 'utf-8')
+            storedPasswordHash = JSON.parse(passwordData).hash
+        } catch (error) {
+            return res.status(401).json({ error: '未设置密码' })
+        }
+
+        const inputPasswordHash = hashPassword(password)
+        if (storedPasswordHash !== inputPasswordHash) {
+            return res.status(401).json({ error: '密码错误' })
+        }
+
+        const templateFile = path.join(DATA_DIR, `template_${id}.json`)
+
+        // 读取现有模板
+        let existingTemplate
+        try {
+            const data = await fs.readFile(templateFile, 'utf-8')
+            existingTemplate = JSON.parse(data)
+        } catch (error) {
+            return res.status(404).json({ error: '模板不存在' })
+        }
+
+        // 更新模板
+        const updatedTemplate = {
+            ...existingTemplate,
+            name: name !== undefined ? name.trim() : existingTemplate.name,
+            slides: slides !== undefined ? slides : existingTemplate.slides,
+            theme: theme !== undefined ? theme : existingTemplate.theme,
+            updatedAt: new Date().toISOString(),
+        }
+
+        await fs.writeFile(templateFile, JSON.stringify(updatedTemplate, null, 2), 'utf-8')
+
+        res.json({
+            success: true,
+            message: '模板更新成功',
+            template: {
+                id: updatedTemplate.id,
+                name: updatedTemplate.name,
+                createdAt: updatedTemplate.createdAt,
+                updatedAt: updatedTemplate.updatedAt,
+                slideCount: updatedTemplate.slides.length,
+            }
+        })
+    } catch (error) {
+        console.error('更新模板失败:', error)
+        res.status(500).json({ error: '更新模板失败' })
+    }
+})
+
+// 删除模板（需要密码）
+app.delete('/api/templates/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+        const { password } = req.body
+
+        if (!password) {
+            return res.status(400).json({ error: '请输入密码' })
+        }
+
+        // 验证密码
+        let storedPasswordHash = null
+        try {
+            const passwordData = await fs.readFile(PASSWORD_FILE, 'utf-8')
+            storedPasswordHash = JSON.parse(passwordData).hash
+        } catch (error) {
+            return res.status(401).json({ error: '未设置密码' })
+        }
+
+        const inputPasswordHash = hashPassword(password)
+        if (storedPasswordHash !== inputPasswordHash) {
+            return res.status(401).json({ error: '密码错误' })
+        }
+
+        const templateFile = path.join(DATA_DIR, `template_${id}.json`)
+
+        try {
+            await fs.unlink(templateFile)
+        } catch (error) {
+            if (error.code === 'ENOENT') {
+                return res.status(404).json({ error: '模板不存在' })
+            }
+            throw error
+        }
+
+        res.json({ success: true, message: '模板已删除' })
+    } catch (error) {
+        console.error('删除模板失败:', error)
+        res.status(500).json({ error: '删除模板失败' })
+    }
+})
+
 // 启动服务器
 async function start() {
     await ensureDataDir()

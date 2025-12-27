@@ -3,8 +3,11 @@
 // 否则使用当前访问的主机名 + 3000 端口（支持跨设备访问）
 const API_BASE_URL = import.meta.env.VITE_API_URL || (() => {
     const hostname = window.location.hostname
-    return `http://${hostname}:3000`
+    // 使用 127.0.0.1 而不是 localhost 以绕过代理
+    const apiHost = hostname === 'localhost' ? '127.0.0.1' : hostname
+    return `http://${apiHost}:3000`
 })()
+
 
 // 获取默认模板
 export async function getDefaultTemplate() {
@@ -86,5 +89,102 @@ export async function changePassword(oldPassword: string, newPassword: string) {
         return data
     } catch (error: any) {
         throw new Error(error.message || '修改密码失败')
+    }
+}
+
+// 获取所有模板列表
+export async function getTemplateList() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/templates`)
+        if (response.ok) {
+            return await response.json()
+        }
+        return []
+    } catch (error) {
+        console.error('获取模板列表失败:', error)
+        return []
+    }
+}
+
+// 获取指定模板
+export async function getTemplateById(id: string) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/templates/${id}`)
+        if (response.ok) {
+            return await response.json()
+        }
+        return null
+    } catch (error) {
+        console.error('获取模板失败:', error)
+        return null
+    }
+}
+
+// 保存新模板
+export async function saveNewTemplate(password: string, name: string, slides: any, theme: any) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/templates`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ password, name, slides, theme }),
+        })
+
+        const data = await response.json()
+
+        if (!response.ok) {
+            throw new Error(data.error || '保存模板失败')
+        }
+
+        return data
+    } catch (error: any) {
+        throw new Error(error.message || '保存模板失败')
+    }
+}
+
+// 更新模板
+export async function updateTemplate(id: string, password: string, updates: { name?: string, slides?: any, theme?: any }) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/templates/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ password, ...updates }),
+        })
+
+        const data = await response.json()
+
+        if (!response.ok) {
+            throw new Error(data.error || '更新模板失败')
+        }
+
+        return data
+    } catch (error: any) {
+        throw new Error(error.message || '更新模板失败')
+    }
+}
+
+// 删除模板
+export async function deleteTemplate(id: string, password: string) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/templates/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ password }),
+        })
+
+        const data = await response.json()
+
+        if (!response.ok) {
+            throw new Error(data.error || '删除模板失败')
+        }
+
+        return data
+    } catch (error: any) {
+        throw new Error(error.message || '删除模板失败')
     }
 }

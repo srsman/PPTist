@@ -19,6 +19,8 @@
           <PopoverMenuItem @click="resetSlides(); mainMenuVisible = false">重置幻灯片</PopoverMenuItem>
           <PopoverMenuItem @click="setAsDefaultTemplate(); mainMenuVisible = false">设为默认模板</PopoverMenuItem>
           <PopoverMenuItem @click="clearDefaultTemplate(); mainMenuVisible = false">清除默认模板</PopoverMenuItem>
+          <PopoverMenuItem @click="openSaveTemplateDialog(); mainMenuVisible = false">保存为模板</PopoverMenuItem>
+          <PopoverMenuItem @click="openTemplateManager(); mainMenuVisible = false">模板管理</PopoverMenuItem>
           <PopoverMenuItem @click="openChangePasswordDialog(); mainMenuVisible = false">修改密码</PopoverMenuItem>
           <!-- <PopoverMenuItem @click="goLink('https://github.com/pipipi-pikachu/PPTist/issues')">意见反馈</PopoverMenuItem> -->
           <!-- <PopoverMenuItem @click="goLink('https://github.com/pipipi-pikachu/PPTist/blob/master/doc/Q&A.md')">常见问题</PopoverMenuItem> -->
@@ -74,6 +76,17 @@
     </Drawer>
 
     <FullscreenSpin :loading="exporting" tip="正在导入..." />
+    
+    <!-- 保存模板对话框 -->
+    <SaveTemplateDialog 
+      v-model:visible="saveTemplateDialogVisible"
+      @success="handleTemplateSaved"
+    />
+    
+    <!-- 模板管理对话框 -->
+    <TemplateManager 
+      v-model:visible="templateManagerVisible"
+    />
   </div>
 </template>
 
@@ -94,6 +107,8 @@ import Drawer from '@/components/Drawer.vue'
 import Input from '@/components/Input.vue'
 import Popover from '@/components/Popover.vue'
 import PopoverMenuItem from '@/components/PopoverMenuItem.vue'
+import SaveTemplateDialog from '@/components/SaveTemplateDialog.vue'
+import TemplateManager from '@/components/TemplateManager.vue'
 
 const mainStore = useMainStore()
 const slidesStore = useSlidesStore()
@@ -107,6 +122,8 @@ const hotkeyDrawerVisible = ref(false)
 const editingTitle = ref(false)
 const titleInputRef = ref<InstanceType<typeof Input>>()
 const titleValue = ref('')
+const saveTemplateDialogVisible = ref(false)
+const templateManagerVisible = ref(false)
 
 const startEditTitle = () => {
   titleValue.value = title.value
@@ -139,6 +156,18 @@ const clearDefaultTemplate = () => {
 
 const openChangePasswordDialog = () => {
   mainStore.setPasswordDialogState(true, 'change')
+}
+
+const openSaveTemplateDialog = () => {
+  saveTemplateDialogVisible.value = true
+}
+
+const openTemplateManager = () => {
+  templateManagerVisible.value = true
+}
+
+const handleTemplateSaved = () => {
+  message.success('模板已保存，可在"模板管理"中查看')
 }
 </script>
 
