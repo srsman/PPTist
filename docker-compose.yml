@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  pptist:
+    build: .
+    container_name: pptist-app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./server/data:/app/server/data
+    restart: always
+    environment:
+      - NODE_ENV=production

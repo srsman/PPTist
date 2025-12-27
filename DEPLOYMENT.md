@@ -49,6 +49,31 @@ npm start
 
 ---
 
+## 🐳 Docker 部署（容器化）
+
+本项目已适配 Docker，支持一键容器化部署。
+
+### 1. 使用 Docker Compose (推荐)
+```bash
+# 构建并后台运行
+docker-compose up -d
+```
+
+### 2. 使用 Dockerfile
+```bash
+# 构建镜像
+docker build -t pptist-app .
+
+# 运行容器 (挂载数据目录以保证模板不丢失)
+docker run -d -p 3000:3000 -v $(pwd)/server/data:/app/server/data --name pptist-app pptist-app
+```
+
+### 3. 说明
+- **端口映射**：默认映射宿主机的 3000 端口。
+- **数据持久化**：必须挂载 `/app/server/data` 目录，否则容器重启后设置的模板和密码会丢失。
+
+---
+
 ## 🛡️ 持久化与安全
 
 ### 1. 数据持久化
