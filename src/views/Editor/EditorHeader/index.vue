@@ -17,8 +17,11 @@
           </FileInput>
           <PopoverMenuItem @click="setDialogForExport('pptx')">导出文件</PopoverMenuItem>
           <PopoverMenuItem @click="resetSlides(); mainMenuVisible = false">重置幻灯片</PopoverMenuItem>
-          <PopoverMenuItem @click="goLink('https://github.com/pipipi-pikachu/PPTist/issues')">意见反馈</PopoverMenuItem>
-          <PopoverMenuItem @click="goLink('https://github.com/pipipi-pikachu/PPTist/blob/master/doc/Q&A.md')">常见问题</PopoverMenuItem>
+          <PopoverMenuItem @click="setAsDefaultTemplate(); mainMenuVisible = false">设为默认模板</PopoverMenuItem>
+          <PopoverMenuItem @click="clearDefaultTemplate(); mainMenuVisible = false">清除默认模板</PopoverMenuItem>
+          <PopoverMenuItem @click="openChangePasswordDialog(); mainMenuVisible = false">修改密码</PopoverMenuItem>
+          <!-- <PopoverMenuItem @click="goLink('https://github.com/pipipi-pikachu/PPTist/issues')">意见反馈</PopoverMenuItem> -->
+          <!-- <PopoverMenuItem @click="goLink('https://github.com/pipipi-pikachu/PPTist/blob/master/doc/Q&A.md')">常见问题</PopoverMenuItem> -->
           <PopoverMenuItem @click="mainMenuVisible = false; hotkeyDrawerVisible = true">快捷键</PopoverMenuItem>
         </template>
         <div class="menu-item"><IconHamburgerButton class="icon" /></div>
@@ -81,6 +84,7 @@ import { useMainStore, useSlidesStore } from '@/store'
 import useScreening from '@/hooks/useScreening'
 import useImport from '@/hooks/useImport'
 import useSlideHandler from '@/hooks/useSlideHandler'
+import message from '@/utils/message'
 import type { DialogForExportTypes } from '@/types/export'
 
 import HotkeyDoc from './HotkeyDoc.vue'
@@ -123,6 +127,18 @@ const goLink = (url: string) => {
 const setDialogForExport = (type: DialogForExportTypes) => {
   mainStore.setDialogForExport(type)
   mainMenuVisible.value = false
+}
+
+const setAsDefaultTemplate = () => {
+  mainStore.setPasswordDialogState(true, 'save')
+}
+
+const clearDefaultTemplate = () => {
+  mainStore.setPasswordDialogState(true, 'clear')
+}
+
+const openChangePasswordDialog = () => {
+  mainStore.setPasswordDialogState(true, 'change')
 }
 </script>
 
@@ -210,4 +226,52 @@ const setDialogForExport = (type: DialogForExportTypes) => {
   display: inline-block;
   height: 30px;
 }
+.password-dialog {
+  padding: 20px;
+  
+  h3 {
+    margin: 0 0 20px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .password-input-wrapper {
+    margin-bottom: 20px;
+  }
+  
+  .dialog-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    
+    button {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+      
+      &.btn-cancel {
+        background-color: #f0f0f0;
+        color: #666;
+        
+        &:hover {
+          background-color: #e0e0e0;
+        }
+      }
+      
+      &.btn-confirm {
+        background-color: #5b9bd5;
+        color: #fff;
+        
+        &:hover {
+          background-color: #4a8bc2;
+        }
+      }
+    }
+  }
+}
 </style>
+```

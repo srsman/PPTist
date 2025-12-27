@@ -1,5 +1,5 @@
 import Dexie from 'dexie'
-import { databaseId } from '@/store/main'
+import { customAlphabet } from 'nanoid'
 import type { Slide } from '@/types/slides'
 import { LOCALSTORAGE_KEY_DISCARDED_DB } from '@/configs/storage'
 
@@ -12,6 +12,15 @@ export interface Snapshot {
   index: number
   slides: Slide[]
 }
+
+export interface DefaultTemplate {
+  id: string
+  slides: Slide[]
+  theme: any
+}
+
+const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz')
+export const databaseId = nanoid(10)
 
 const databaseNamePrefix = 'PPTist'
 
@@ -27,8 +36,11 @@ export const deleteDiscardedDB = async () => {
 
   const databaseNames = await Dexie.getDatabaseNames()
   const discardedDBNames = databaseNames.filter(name => {
+    // 跳过永久数据库，不删除
+    if (name === 'PPTist_Permanent') return false
+
     if (name.indexOf(databaseNamePrefix) === -1) return false
-    
+
     const [prefix, id, time] = name.split('_')
     if (prefix !== databaseNamePrefix || !id || !time) return true
     if (localStorageDiscardedDBList.includes(id)) return true
@@ -56,4 +68,17 @@ class PPTistDB extends Dexie {
   }
 }
 
+class PermanentDB extends Dexie {
+  public defaultTemplate: Dexie.Table<DefaultTemplate, string>
+
+  public constructor() {
+    super('PPTist_Permanent')
+    this.version(1).stores({
+      defaultTemplate: 'id',
+    })
+    this.defaultTemplate = this.table('defaultTemplate')
+  }
+}
+
 export const db = new PPTistDB()
+export const persistentDb = new PermanentDB()

@@ -1,4 +1,3 @@
-import { customAlphabet } from 'nanoid'
 import { defineStore } from 'pinia'
 import { ToolbarStates } from '@/types/toolbar'
 import type { CreatingElement, ShapeFormatPainter, TextFormatPainter } from '@/types/edit'
@@ -8,6 +7,7 @@ import { SYS_FONTS } from '@/configs/font'
 import { isSupportFont } from '@/utils/font'
 
 import { useSlidesStore } from './slides'
+import { databaseId } from '@/utils/database'
 
 export interface MainState {
   activeElementIdList: string[]
@@ -38,10 +38,11 @@ export interface MainState {
   showSelectPanel: boolean
   showSearchPanel: boolean
   showNotesPanel: boolean
+  passwordDialogVisible: boolean
+  passwordDialogAction: 'save' | 'clear' | 'change' | null
 }
 
-const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz')
-export const databaseId = nanoid(10)
+// databaseId imported from @/utils/database
 
 export const useMainStore = defineStore('main', {
   state: (): MainState => ({
@@ -73,6 +74,8 @@ export const useMainStore = defineStore('main', {
     showSelectPanel: false, // 打开选择面板
     showSearchPanel: false, // 打开查找替换面板
     showNotesPanel: false, // 打开批注面板
+    passwordDialogVisible: false, // 密码对话框可见性
+    passwordDialogAction: null, // 密码对话框操作类型
   }),
 
   getters: {
@@ -82,7 +85,7 @@ export const useMainStore = defineStore('main', {
       if (!currentSlide || !currentSlide.elements) return []
       return currentSlide.elements.filter(element => state.activeElementIdList.includes(element.id))
     },
-  
+
     handleElement(state) {
       const slidesStore = useSlidesStore()
       const currentSlide = slidesStore.currentSlide
@@ -95,86 +98,86 @@ export const useMainStore = defineStore('main', {
     setActiveElementIdList(activeElementIdList: string[]) {
       if (activeElementIdList.length === 1) this.handleElementId = activeElementIdList[0]
       else this.handleElementId = ''
-      
+
       this.activeElementIdList = activeElementIdList
     },
-    
+
     setHandleElementId(handleElementId: string) {
       this.handleElementId = handleElementId
     },
-    
+
     setActiveGroupElementId(activeGroupElementId: string) {
       this.activeGroupElementId = activeGroupElementId
     },
-    
+
     setHiddenElementIdList(hiddenElementIdList: string[]) {
       this.hiddenElementIdList = hiddenElementIdList
     },
-  
+
     setCanvasPercentage(percentage: number) {
       this.canvasPercentage = percentage
     },
-  
+
     setCanvasScale(scale: number) {
       this.canvasScale = scale
     },
-  
+
     setCanvasDragged(isDragged: boolean) {
       this.canvasDragged = isDragged
     },
-  
+
     setThumbnailsFocus(isFocus: boolean) {
       this.thumbnailsFocus = isFocus
     },
-  
+
     setEditorareaFocus(isFocus: boolean) {
       this.editorAreaFocus = isFocus
     },
-  
+
     setDisableHotkeysState(disable: boolean) {
       this.disableHotkeys = disable
     },
-  
+
     setGridLineSize(size: number) {
       this.gridLineSize = size
     },
-  
+
     setRulerState(show: boolean) {
       this.showRuler = show
     },
-  
+
     setCreatingElement(element: CreatingElement | null) {
       this.creatingElement = element
     },
-  
+
     setCreatingCustomShapeState(state: boolean) {
       this.creatingCustomShape = state
     },
-  
+
     setAvailableFonts() {
       this.availableFonts = SYS_FONTS.filter(font => isSupportFont(font.value))
     },
-  
+
     setToolbarState(toolbarState: ToolbarStates) {
       this.toolbarState = toolbarState
     },
-  
+
     setClipingImageElementId(elId: string) {
       this.clipingImageElementId = elId
     },
-  
+
     setRichtextAttrs(attrs: TextAttrs) {
       this.richTextAttrs = attrs
     },
-  
+
     setSelectedTableCells(cells: string[]) {
       this.selectedTableCells = cells
     },
-  
+
     setScalingState(isScaling: boolean) {
       this.isScaling = isScaling
     },
-    
+
     updateSelectedSlidesIndex(selectedSlidesIndex: number[]) {
       this.selectedSlidesIndex = selectedSlidesIndex
     },
@@ -201,6 +204,11 @@ export const useMainStore = defineStore('main', {
 
     setNotesPanelState(show: boolean) {
       this.showNotesPanel = show
+    },
+
+    setPasswordDialogState(visible: boolean, action: 'save' | 'clear' | 'change' | null = null) {
+      this.passwordDialogVisible = visible
+      this.passwordDialogAction = action
     },
   },
 })

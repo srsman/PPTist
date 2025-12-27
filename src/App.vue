@@ -9,7 +9,7 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useScreenStore, useMainStore, useSnapshotStore } from '@/store'
+import { useScreenStore, useMainStore, useSnapshotStore, useSlidesStore } from '@/store'
 import { LOCALSTORAGE_KEY_DISCARDED_DB } from '@/configs/storage'
 import { deleteDiscardedDB } from '@/utils/database'
 import { isPC } from './utils/common'
@@ -29,8 +29,11 @@ if (import.meta.env.MODE !== 'development') {
   window.onbeforeunload = () => false
 }
 
+const slidesStore = useSlidesStore()
+
 onMounted(async () => {
   await deleteDiscardedDB()
+  await slidesStore.initSlides()
   snapshotStore.initSnapshotDatabase()
   mainStore.setAvailableFonts()
 })
